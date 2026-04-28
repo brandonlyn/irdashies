@@ -69,6 +69,7 @@ export async function publishIRacingSDKEvents(
       let lastSessionVersion = -1;
       let lastSessionPublishTime = 0;
       let wasRunning = false;
+      let lastSubSessionId = -1;
 
       while (!shouldStop && sdk.waitForData(WAIT_TIMEOUT)) {
         if (!wasRunning) {
@@ -88,6 +89,16 @@ export async function publishIRacingSDKEvents(
         }
 
         if (session) {
+          // Log WeekendInfo if we've joined a new subsession
+          const subSessionId = session.WeekendInfo?.SubSessionID;
+          if (subSessionId !== undefined && subSessionId !== lastSubSessionId) {
+            logger.info(
+              `[SESSION_INFO] Joined subsession ${subSessionId}:`,
+              session.WeekendInfo
+            );
+            lastSubSessionId = subSessionId;
+          }
+
           // Only publish the session data if it has changed or if 1 second has passed since the last publish
           const now = Date.now();
           const timeSinceLastPublish = now - lastSessionPublishTime;

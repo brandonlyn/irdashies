@@ -107,7 +107,9 @@ export type StandingsBadgeFormat =
   | 'rating-only-bw-rating-bw'
   | 'license-bw-rating-bw-no-license'
   | 'rating-bw-no-license'
-  | 'fullrating-bw-no-license';
+  | 'fullrating-bw-no-license'
+  | 'license-only-color'
+  | 'license-only-bw';
 
 export type RelativeBadgeFormat =
   | 'license-color-fullrating-combo'
@@ -120,7 +122,9 @@ export type RelativeBadgeFormat =
   | 'rating-only-bw-rating-bw'
   | 'license-bw-rating-bw-no-license'
   | 'rating-bw-no-license'
-  | 'fullrating-bw-no-license';
+  | 'fullrating-bw-no-license'
+  | 'license-only-color'
+  | 'license-only-bw';
 
 // ===========================
 // Widget config types
@@ -130,6 +134,7 @@ export interface StandingsConfig {
   iratingChange: { enabled: boolean };
   positionChange: { enabled: boolean };
   badge: { enabled: boolean; badgeFormat: StandingsBadgeFormat };
+  grlBadge: { enabled: boolean; badgeFormat: StandingsBadgeFormat };
   delta: { enabled: boolean };
   gap: { enabled: boolean; decimalPlaces?: number };
   interval: { enabled: boolean; decimalPlaces?: number };
@@ -179,6 +184,7 @@ export interface RelativeConfig {
   footerBar: SessionBarConfig;
   showOnlyWhenOnTrack: boolean;
   badge: { enabled: boolean; badgeFormat: RelativeBadgeFormat };
+  grlBadge: { enabled: boolean; badgeFormat: RelativeBadgeFormat };
   iratingChange: { enabled: boolean };
   positionChange?: { enabled: boolean };
   delta: { enabled: boolean; precision: number };

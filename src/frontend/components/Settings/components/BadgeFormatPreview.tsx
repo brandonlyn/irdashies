@@ -3,83 +3,126 @@ export const BadgeFormatPreview = ({
   format,
   selected,
   onClick,
+  type = 'driver',
 }: {
   format: string;
   selected: boolean;
   onClick: () => void;
+  type?: 'driver' | 'grl';
 }) => {
+  const isGrl = type === 'grl';
+
+  // Actual GrlRatingBadge uses Pro for > 3000 rating, let's use Pro for preview
+  const grlLicense = 'Pro';
+  const grlColor = 'border-[#9c27b0] bg-[#6a1b9a]';
+  const iracingColor = 'border-green-500 bg-green-800';
+
+  const badgeColor = isGrl ? grlColor : iracingColor;
+  const licenseText = isGrl ? grlLicense : 'B 3.8';
+  const shortLicenseText = isGrl ? 'P' : 'B';
+  const ratingText = isGrl ? '3412' : '1412';
+  const kRatingText = isGrl ? '3.4k' : '1.4k';
+
   const renderPreview = () => {
     switch (format) {
+      case 'license-only-color':
+        return (
+          <div
+            className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight min-w-[3.6em] text-center ${badgeColor}`}
+          >
+            {licenseText}
+          </div>
+        );
+      case 'license-only-bw':
+        return (
+          <div className="bg-white/10 text-white text-center text-nowrap border-2 border-transparent px-1 rounded-md text-xs leading-tight min-w-[3.6em]">
+            {licenseText}
+          </div>
+        );
       case 'license-color-fullrating-combo':
         return (
-          <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-            B 3.8 &nbsp; 1412
+          <div
+            className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+          >
+            {licenseText} &nbsp; {ratingText}
           </div>
         );
       case 'fullrating-color-no-license':
         return (
-          <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-            1412
+          <div
+            className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+          >
+            {ratingText}
           </div>
         );
       case 'license-color-fullrating-bw':
         return (
           <div className="flex gap-1 items-center">
-            <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-              B 3.8
+            <div
+              className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+            >
+              {licenseText}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1412
+              {ratingText}
             </div>
           </div>
         );
       case 'license-color-rating-bw':
         return (
           <div className="flex gap-1 items-center">
-            <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-              B 3.8
+            <div
+              className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+            >
+              {licenseText}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
       case 'rating-only-color-rating-bw':
         return (
           <div className="flex gap-1 items-center">
-            <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-              3.8
+            <div
+              className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+            >
+              {isGrl ? licenseText : '3.8'}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
       case 'license-color-rating-bw-no-license':
         return (
           <div className="flex gap-1 items-center">
-            <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-              B
+            <div
+              className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+            >
+              {shortLicenseText}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
       case 'rating-color-no-license':
         return (
-          <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight border-green-500 bg-green-800">
-            1.4k
+          <div
+            className={`text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight ${badgeColor}`}
+          >
+            {kRatingText}
           </div>
         );
       case 'license-bw-rating-bw':
         return (
           <div className="flex gap-1 items-center">
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              B 3.8
+              {licenseText}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
@@ -87,10 +130,10 @@ export const BadgeFormatPreview = ({
         return (
           <div className="flex gap-1 items-center">
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              3.8
+              {isGrl ? shortLicenseText : '3.8'}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
@@ -98,23 +141,23 @@ export const BadgeFormatPreview = ({
         return (
           <div className="flex gap-1 items-center">
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              B
+              {shortLicenseText}
             </div>
             <div className="bg-white/10 text-white border-2 border-transparent px-1 rounded-md text-xs leading-tight">
-              1.4k
+              {kRatingText}
             </div>
           </div>
         );
       case 'rating-bw-no-license':
         return (
           <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight bg-white/10 border-transparent">
-            1.4k
+            {kRatingText}
           </div>
         );
       case 'fullrating-bw-no-license':
         return (
           <div className="text-white text-nowrap border-2 px-1 rounded-md text-xs leading-tight bg-white/10 border-transparent">
-            1412
+            {ratingText}
           </div>
         );
       default:

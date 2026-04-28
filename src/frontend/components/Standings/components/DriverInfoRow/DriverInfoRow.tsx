@@ -1,10 +1,12 @@
 import { memo, useMemo } from 'react';
 import { getTailwindStyle } from '@irdashies/utils/colors';
 import { formatTime, type TimeFormat } from '@irdashies/utils/time';
+import { GRL_LEAGUE_ID } from '@irdashies/types';
 import {
   usePitStopDuration,
   usePitLaneStore,
   useDashboard,
+  useSessionStore,
 } from '@irdashies/context';
 import type { ResolvedDriverTag } from '../../hooks/useDriverTagMap';
 import type { Gap, LastTimeState } from '../../createStandings';
@@ -204,7 +206,7 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
 
   const pitExitPct = usePitLaneStore((s) => s.pitExitPct);
 
-  const { currentDashboard } = useDashboard();
+  const { currentDashboard, isDemoMode } = useDashboard();
   const tagSettings = currentDashboard?.generalSettings?.driverTagSettings;
   // When pit exit is in the last 15% of the lap, the S/F line is reached
   // very shortly after exiting pits. OUT must persist for one extra lap count.
@@ -238,6 +240,10 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     if (!numLapDeltasToShow) return null;
     return Array.from({ length: numLapDeltasToShow }, (_, index) => index);
   }, [numLapDeltasToShow]);
+
+  const leagueId = useSessionStore(
+    (state) => state.session?.WeekendInfo?.LeagueID
+  );
 
   const columnDefinitions = useMemo(() => {
     const columns = [
@@ -413,6 +419,35 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
             badgeFormat={config?.badge?.badgeFormat}
             isMinimal={badgeMinimal}
             compactMode={compactMode}
+            type="driver"
+            carIdx={carIdx}
+            name={name}
+          />
+        ),
+      },
+      {
+        id: 'grlBadge',
+        shouldRender:
+          (displayOrder ? displayOrder.includes('grlBadge') : false) &&
+          (config && 'grlBadge' in config
+            ? (config.grlBadge?.enabled ?? false)
+            : false) &&
+          (leagueId === GRL_LEAGUE_ID || isDemoMode),
+        component: (
+          <BadgeCell
+            key="grlBadge"
+            license={license}
+            rating={rating}
+            badgeFormat={
+              config && 'grlBadge' in config
+                ? config.grlBadge.badgeFormat
+                : undefined
+            }
+            isMinimal={badgeMinimal}
+            compactMode={compactMode}
+            type="grl"
+            carIdx={carIdx}
+            name={name}
           />
         ),
       },
@@ -646,6 +681,9 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     numberBackground,
     numberBorder,
     compactMode,
+    carIdx,
+    isDemoMode,
+    leagueId,
   ]);
 
   return (
