@@ -38,6 +38,18 @@ This project is built with React and Electron and uses the iRacing SDK to retrie
 
 ## Available overlays
 
+### GRL Badge
+
+Displays driver information for the [Global Racing League](https://globalracingleague.com/)
+
+Enable in Standings/Relative -> Display -> GRL Badge
+
+![GRL Badge](./docs/assets/grl-1.png)
+
+**Configuration Options:**
+
+![GRL Badge](./docs/assets/grl-2.png)
+
 ### Input trace
 
 Displays the throttle, clutch, and brake input traces, as well as the current gear and speed.
