@@ -17,5 +17,7 @@ export * from './LapTimesStore/LapTimesStoreUpdater';
 export * from './SectorTimingStore/SectorTimingStore';
 export * from './PushToPassStore/PushToPassStore';
 export * from './PushToPassStore/PushToPassStoreUpdater';
+export * from './GrlStore/GrlStore';
+export * from './GrlStore/GrlStoreUpdater';
 export * from './shared';
 export * from './PersonalBestStore/PersonalBestStore';
