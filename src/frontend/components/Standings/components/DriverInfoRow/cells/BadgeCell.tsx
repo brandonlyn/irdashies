@@ -3,6 +3,7 @@ import {
   DriverRatingBadge,
   type DriverRatingBadgeProps,
 } from '../../DriverRatingBadge/DriverRatingBadge';
+import { GrlRatingBadge } from '../../GrlRatingBadge/GrlRatingBadge';
 
 interface BadgeCellProps {
   license?: string;
@@ -10,6 +11,9 @@ interface BadgeCellProps {
   badgeFormat?: DriverRatingBadgeProps['format'];
   isMinimal?: boolean;
   compactMode?: string;
+  type?: 'driver' | 'grl';
+  carIdx?: number;
+  name?: string;
 }
 
 export const BadgeCell = memo(
@@ -19,6 +23,9 @@ export const BadgeCell = memo(
     badgeFormat,
     isMinimal,
     compactMode,
+    type = 'driver',
+    carIdx,
+    name,
   }: BadgeCellProps) => {
     const pxClass =
       compactMode === 'ultra'
@@ -28,15 +35,26 @@ export const BadgeCell = memo(
           : 'px-2';
     return (
       <td
-        data-column="badge"
+        data-column={type === 'grl' ? 'grlBadge' : 'badge'}
         className={`w-auto whitespace-nowrap text-center ${pxClass}`}
       >
-        <DriverRatingBadge
-          license={license}
-          rating={rating}
-          format={badgeFormat}
-          isMinimal={isMinimal}
-        />
+        {type === 'grl' ? (
+          <GrlRatingBadge
+            license={license}
+            rating={rating}
+            format={badgeFormat}
+            isMinimal={isMinimal}
+            carIdx={carIdx}
+            name={name}
+          />
+        ) : (
+          <DriverRatingBadge
+            license={license}
+            rating={rating}
+            format={badgeFormat}
+            isMinimal={isMinimal}
+          />
+        )}
       </td>
     );
   }
