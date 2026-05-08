@@ -13,6 +13,7 @@ import {
   useP2PDisplayStates,
   usePitStopDuration,
   usePitLaneStore,
+  useGrlStoreUpdater,
 } from '@irdashies/context';
 import {
   useRelativeSettings,
@@ -51,7 +52,6 @@ export const Relative = () => {
 
   const p2pDisplayStates = useP2PDisplayStates();
 
-
   const lapTimeDeltasEnabled = settings?.lapTimeDeltas?.enabled ?? false;
   useLapTimesStoreUpdater(lapTimeDeltasEnabled);
   const numLapDeltas = settings?.lapTimeDeltas?.numLaps ?? 3;
@@ -65,6 +65,9 @@ export const Relative = () => {
   const pitStopDurations = usePitStopDuration();
   const pitExitPct = usePitLaneStore((s) => s.pitExitPct);
   const pitExitAfterSF = pitExitPct !== null && pitExitPct > 0.85;
+
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const isSingleMake = useIsSingleMake();
   const hideCarManufacturer = !!(

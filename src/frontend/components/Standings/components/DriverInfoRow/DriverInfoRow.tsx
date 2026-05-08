@@ -1,8 +1,13 @@
 import { memo, useMemo } from 'react';
 import { getTailwindStyle } from '@irdashies/utils/colors';
 import { formatTime, type TimeFormat } from '@irdashies/utils/time';
-import { useDashboard, type P2PDisplayState } from '@irdashies/context';
+import {
+  useDashboard,
+  type P2PDisplayState,
+  useSessionStore,
+} from '@irdashies/context';
 import type { ResolvedDriverTag } from '../../hooks';
+import { GRL_LEAGUE_ID } from '@irdashies/types';
 import type { Gap, LastTimeState } from '../../createStandings';
 import type {
   RelativeWidgetSettings,
@@ -232,7 +237,7 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     p2pDisplayState,
   } = displayProps;
 
-  const { currentDashboard } = useDashboard();
+  const { currentDashboard, isDemoMode } = useDashboard();
   const tagSettings = currentDashboard?.generalSettings?.driverTagSettings;
 
   const lastTimeString = useMemo(() => {
@@ -263,6 +268,10 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     if (!numLapDeltasToShow) return null;
     return Array.from({ length: numLapDeltasToShow }, (_, index) => index);
   }, [numLapDeltasToShow]);
+
+  const leagueId = useSessionStore(
+    (state) => state.session?.WeekendInfo?.LeagueID
+  );
 
   const columnDefinitions = useMemo(() => {
     const columns = [
@@ -429,7 +438,9 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
         id: 'badge',
         shouldRender:
           (displayOrder ? displayOrder.includes('badge') : true) &&
-          (config?.badge?.enabled ?? true),
+          (config?.badge?.enabled ?? true) &&
+          (!config?.useDynamicBadge ||
+            (leagueId !== GRL_LEAGUE_ID && !isDemoMode)),
         component: (
           <BadgeCell
             key="badge"
@@ -438,6 +449,35 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
             badgeFormat={config?.badge?.badgeFormat}
             isMinimal={badgeMinimal}
             compactMode={compactMode}
+            type="driver"
+            carIdx={carIdx}
+            name={name}
+          />
+        ),
+      },
+      {
+        id: 'grlBadge',
+        shouldRender:
+          (displayOrder ? displayOrder.includes('grlBadge') : false) &&
+          (config && 'grlBadge' in config
+            ? (config.grlBadge?.enabled ?? false)
+            : false) &&
+          (leagueId === GRL_LEAGUE_ID || isDemoMode),
+        component: (
+          <BadgeCell
+            key="grlBadge"
+            license={license}
+            rating={rating}
+            badgeFormat={
+              config && 'grlBadge' in config
+                ? config.grlBadge.badgeFormat
+                : undefined
+            }
+            isMinimal={badgeMinimal}
+            compactMode={compactMode}
+            type="grl"
+            carIdx={carIdx}
+            name={name}
           />
         ),
       },
@@ -684,6 +724,9 @@ export const DriverInfoRow = memo((props: DriverRowInfoProps) => {
     numberBorder,
     compactMode,
     p2pDisplayState,
+    carIdx,
+    isDemoMode,
+    leagueId,
   ]);
 
   return (
