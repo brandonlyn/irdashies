@@ -15,6 +15,7 @@ import {
   useGeneralSettings,
   useLapTimesStoreUpdater,
   usePitLapStoreUpdater,
+  useGrlStoreUpdater,
   useDrivingState,
   useWeekendInfoNumCarClasses,
   useWeekendInfoTeamRacing,
@@ -35,6 +36,9 @@ export const Standings = () => {
 
   // Update pit laps
   usePitLapStoreUpdater();
+
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const standings = useDriverStandings(settings);
   const classStats = useCarClassStats();

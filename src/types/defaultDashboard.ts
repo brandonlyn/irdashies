@@ -27,9 +27,12 @@ export const defaultDashboard: {
           enabled: true,
           badgeFormat: 'license-color-rating-bw',
         },
-        delta: {
+        grlBadge: {
           enabled: true,
+          badgeFormat: 'license-color-rating-bw',
         },
+        useDynamicBadge: false,
+        delta: { enabled: true },
         gap: {
           enabled: false,
           decimalPlaces: 1,
@@ -234,6 +237,7 @@ export const defaultDashboard: {
           'pitStatus',
           'carManufacturer',
           'badge',
+          'grlBadge',
           'iratingChange',
           'positionChange',
           'gap',
@@ -419,6 +423,11 @@ export const defaultDashboard: {
           enabled: true,
           badgeFormat: 'license-color-rating-bw',
         },
+        grlBadge: {
+          enabled: true,
+          badgeFormat: 'license-color-rating-bw',
+        },
+        useDynamicBadge: false,
         iratingChange: {
           enabled: false,
         },
@@ -454,6 +463,7 @@ export const defaultDashboard: {
           'pitStatus',
           'carManufacturer',
           'badge',
+          'grlBadge',
           'iratingChange',
           'positionChange',
           'delta',

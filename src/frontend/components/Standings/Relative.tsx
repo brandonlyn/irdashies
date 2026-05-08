@@ -11,6 +11,7 @@ import {
   useLapTimeHistory,
   useFocusCarIdx,
   useTelemetryValue,
+  useGrlStoreUpdater,
 } from '@irdashies/context';
 import {
   useRelativeSettings,
@@ -58,6 +59,9 @@ export const Relative = () => {
     () => calculateLapDeltas(lapTimeHistory, focusCarIdx, lapTimeDeltasEnabled),
     [lapTimeHistory, focusCarIdx, lapTimeDeltasEnabled]
   );
+
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const isSingleMake = useIsSingleMake();
   const hideCarManufacturer = !!(
