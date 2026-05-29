@@ -52,8 +52,8 @@ export const defaultDashboard: {
         background: {
           opacity: 80,
         },
-        foreground: { 
-          opacity: 70, 
+        foreground: {
+          opacity: 70,
         },
         countryFlags: {
           enabled: true,
@@ -117,6 +117,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: true,
@@ -177,6 +178,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: false,
@@ -390,8 +392,8 @@ export const defaultDashboard: {
         background: {
           opacity: 80,
         },
-        foreground: { 
-          opacity: 70, 
+        foreground: {
+          opacity: 70,
         },
         position: {
           enabled: true,
@@ -490,6 +492,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: true,
@@ -550,6 +553,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: false,
@@ -1112,7 +1116,7 @@ export const defaultDashboard: {
           totalFormat: 'minimal',
           labelStyle: 'minimal',
         },
-        sessionLaps: { enabled: true, mode: 'Elapsed' },
+        sessionLaps: { enabled: true, mode: 'Elapsed', decimalPlaces: 2 },
         incidentCount: { enabled: true },
         brakeBias: { enabled: false },
         localTime: { enabled: true },

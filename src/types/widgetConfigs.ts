@@ -57,7 +57,11 @@ export interface SessionBarConfig {
     totalFormat?: 'hh:mm' | 'minimal';
     labelStyle?: 'none' | 'short' | 'minimal';
   };
-  sessionLaps: { enabled: boolean; mode?: 'Elapsed' | 'Remaining' };
+  sessionLaps: {
+    enabled: boolean;
+    mode?: 'Elapsed' | 'Remaining';
+    decimalPlaces?: number;
+  };
   incidentCount: { enabled: boolean };
   brakeBias: { enabled: boolean };
   localTime: { enabled: boolean };
