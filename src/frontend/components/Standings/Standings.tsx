@@ -15,6 +15,7 @@ import {
   useGeneralSettings,
   useLapTimesStoreUpdater,
   usePitLapStoreUpdater,
+  useGrlStoreUpdater,
   useDrivingState,
   useWeekendInfoNumCarClasses,
   useWeekendInfoTeamRacing,
@@ -37,6 +38,9 @@ export const Standings = () => {
 
   // Update pit laps
   usePitLapStoreUpdater();
+
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const standings = useDriverStandings(settings);
   const classStats = useCarClassStats();
@@ -90,7 +94,11 @@ export const Standings = () => {
     >
       <TitleBar titleBarSettings={settings?.titleBar} />
       {settings?.headerBar && (settings.headerBar.enabled ?? true) && (
-        <SessionBar settings={settings.headerBar} opacity={settings?.foreground?.opacity} position="header" />
+        <SessionBar
+          settings={settings.headerBar}
+          opacity={settings?.foreground?.opacity}
+          position="header"
+        />
       )}
       <table
         className={`w-full table-auto text-sm border-separate ${tableBorderSpacing}`}
@@ -270,7 +278,11 @@ export const Standings = () => {
         </tbody>
       </table>
       {settings?.footerBar && (settings.footerBar.enabled ?? true) && (
-        <SessionBar settings={settings.footerBar} opacity={settings?.foreground?.opacity} position="footer" />
+        <SessionBar
+          settings={settings.footerBar}
+          opacity={settings?.foreground?.opacity}
+          position="footer"
+        />
       )}
     </div>
   );
