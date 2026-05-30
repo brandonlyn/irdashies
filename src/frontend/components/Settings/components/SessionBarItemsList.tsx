@@ -7,6 +7,7 @@ export interface SessionBarItemConfig {
   enabled: boolean;
   unit?: 'Metric' | 'Imperial';
   mode?: 'Remaining' | 'Elapsed';
+  decimalPlaces?: number;
   totalFormat?: 'hh:mm' | 'minimal';
   labelStyle?: 'none' | 'short' | 'minimal';
   speedPosition?: 'left' | 'right';
@@ -138,6 +139,19 @@ export const SessionBarItemsList = ({
                 >
                   <option value="Elapsed">Elapsed</option>
                   <option value="Remaining">Remaining</option>
+                </select>
+                <select
+                  value={itemConfig.decimalPlaces ?? 0}
+                  onChange={(e) =>
+                    updateItemConfig(item.id, {
+                      decimalPlaces: parseInt(e.target.value, 10),
+                    })
+                  }
+                  className="bg-slate-700 text-white rounded-md px-2 py-1"
+                >
+                  <option value={0}>0dp</option>
+                  <option value={1}>1dp</option>
+                  <option value={2}>2dp</option>
                 </select>
               </div>
             )}

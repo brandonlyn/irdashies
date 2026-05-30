@@ -26,6 +26,7 @@ export const useTotalRaceTime = () => {
     isFixedLapRace: isFixedLapRace,
     totalRaceTime: 0,
     adjustedRaceTime: 0,
+    isEstimate: false,
   };
 
   // No race, no business
@@ -52,8 +53,9 @@ export const useTotalRaceTime = () => {
         ? avgLapTimes[lapTimeCarIdx]
         : classEstLapTimes?.[lapTimeCarIdx]) ?? -1;
     if (avgLapTime > 0) {
-      result.totalRaceTime = totalLaps * avgLapTime;
-      result.adjustedRaceTime = result.totalRaceTime;
+      const estimatedTotalTime = totalLaps * avgLapTime;
+      let estimatedAdjustedTime = estimatedTotalTime;
+
       if (
         lap !== undefined &&
         leaderLap !== undefined &&
@@ -65,9 +67,25 @@ export const useTotalRaceTime = () => {
         const totalDist = lap + lapDistPct;
         const totalLeaderDist = leaderLap + leaderLapDistPct;
         if (totalLeaderDist > totalDist) {
-          result.adjustedRaceTime =
+          estimatedAdjustedTime =
             (totalLaps - Math.floor(totalLeaderDist - totalDist)) * avgLapTime;
         }
+      }
+
+      // If we have a session time limit, use the shorter of the two
+      // timeTotal >= 604800 means no time limit in iRacing
+      if (
+        timeTotal > 0 &&
+        timeTotal < 604800 &&
+        timeTotal < estimatedTotalTime
+      ) {
+        result.totalRaceTime = timeTotal;
+        result.adjustedRaceTime = timeTotal;
+        result.isEstimate = false;
+      } else {
+        result.totalRaceTime = estimatedTotalTime;
+        result.adjustedRaceTime = estimatedAdjustedTime;
+        result.isEstimate = true;
       }
     }
   } else {
@@ -75,6 +93,7 @@ export const useTotalRaceTime = () => {
     // In replays, the average lap time is reported as 1s, which is obviously invalid, so we skip
     // the estimation in this case
     result.totalRaceTime = timeTotal;
+    result.isEstimate = false;
   }
   return result;
 };
