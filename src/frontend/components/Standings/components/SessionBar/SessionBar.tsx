@@ -97,7 +97,7 @@ interface SessionBarProps {
 
 export const SessionBar = ({
   settings: effectiveBarSettings,
-  position = 'header',  
+  position = 'header',
   opacity = 70,
   standalone = false,
 }: SessionBarProps) => {
@@ -149,7 +149,7 @@ export const SessionBar = ({
   const localTime = useCurrentTime();
   const sessionClockTime = useSessionCurrentTime();
   const { totalRaceLaps, isFixedLapRace } = useTotalRaceLaps();
-  const { totalRaceTime, adjustedRaceTime } = useTotalRaceTime();
+  const { totalRaceTime, adjustedRaceTime, isEstimate } = useTotalRaceTime();
   const trackDisplayName = useTrackDisplayName();
 
   // Define all possible items with their render functions
@@ -180,7 +180,7 @@ export const SessionBar = ({
             case SessionState.ParadeLaps:
               // Freeze the race timers until green
               elapsedTime = 0;
-              if (isFixedLapRace) {
+              if (isFixedLapRace && isEstimate) {
                 remainingTime = totalRaceTime;
                 totalTime = totalRaceTime;
               } else {
@@ -192,7 +192,7 @@ export const SessionBar = ({
             case SessionState.Checkered:
               // Session timer does not restart at green
               elapsedTime = time - greenFlagTimestamp;
-              if (isFixedLapRace) {
+              if (isFixedLapRace && isEstimate) {
                 remainingTime = adjustedRaceTime - elapsedTime;
                 totalTime = totalRaceTime;
               } else {
@@ -230,7 +230,7 @@ export const SessionBar = ({
             ? formatTotalTime(totalTime, totalFormat, true, labelStyle)
             : '-';
 
-        if (session === 'Race' && state >= 2 && isFixedLapRace) {
+        if (session === 'Race' && state >= 2 && isEstimate) {
           totalStr = '~' + totalStr;
         }
 
@@ -257,6 +257,8 @@ export const SessionBar = ({
         const lapDisplay = Math.max(currentLap, 0);
         const lapsTotal = session === 'Race' ? totalRaceLaps : totalLaps;
         const lapsMode = effectiveBarSettings?.sessionLaps?.mode ?? 'Elapsed';
+        const decimalPlaces =
+          effectiveBarSettings?.sessionLaps?.decimalPlaces ?? 0;
         // Round up the total if the current lap has exceeded it
         const overrun = lapDisplay > lapsTotal;
         const effectiveTotal = overrun ? lapDisplay : lapsTotal;
@@ -277,17 +279,25 @@ export const SessionBar = ({
           if (isFixedLapRace)
             return (
               <div className="flex justify-center">
-                L{lapValue} / {lapsTotal.toFixed(0)}
+                L{lapValue.toFixed(decimalPlaces)} /{' '}
+                {lapsTotal.toFixed(decimalPlaces)}
               </div>
             );
           else
             return (
               <div className="flex justify-center">
-                L{lapValue} /{' '}
-                {overrun ? effectiveTotal.toFixed(0) : lapsTotal.toFixed(1)}
+                L{lapValue.toFixed(decimalPlaces)} /{' '}
+                {overrun
+                  ? effectiveTotal.toFixed(decimalPlaces)
+                  : lapsTotal.toFixed(decimalPlaces)}
               </div>
             );
-        else return <div className="flex justify-center">L{lapDisplay}</div>;
+        else
+          return (
+            <div className="flex justify-center">
+              L{lapDisplay.toFixed(decimalPlaces)}
+            </div>
+          );
       },
     },
     incidentCount: {
@@ -499,9 +509,9 @@ export const SessionBar = ({
     <div
       className={`${pxClass} ${pyClass} bg-slate-900/(--fg-opacity) flex items-center text-sm ${standalone ? `w-full justify-between ${gapClass}` : 'justify-between'} ${!isCompact && !isUltra && !standalone ? (position === 'header' ? 'mb-3' : 'mt-3') : ''}`}
       style={{
-          ['--fg-opacity' as string]: `${opacity}%`,
-        }}
-      >
+        ['--fg-opacity' as string]: `${opacity}%`,
+      }}
+    >
       {itemsToRender}
     </div>
   );

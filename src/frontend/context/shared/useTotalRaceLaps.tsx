@@ -38,46 +38,70 @@ export const useTotalRaceLaps = () => {
     return { isFixedLapRace: true, totalRaceLaps: currentLap };
   }
 
-  if (isFixedLapRace) {
-    // Easy case, fixed lap count. We just have to account for the race leader that might have lapped us
-    result.totalRaceLaps = totalLaps;
+  const classEstLapTime = classEstLapTimes?.[carIdx];
+  const effectiveLapTime =
+    avgLapTime !== undefined && avgLapTime > 1
+      ? avgLapTime
+      : classEstLapTime !== undefined && classEstLapTime > 1
+        ? classEstLapTime
+        : undefined;
 
+  if (isFixedLapRace) {
+    // Fixed lap count. We just have to account for the race leader that might have lapped us
+    let leaderCarIdx = -1;
     let leaderLap = 0;
     let leaderLapDistPct = 0;
     for (let i = 0; i < carIdxPosition.length; i++) {
       if (carIdxPosition[i] === 1) {
+        leaderCarIdx = i;
         leaderLap = carIdxLap[i];
         leaderLapDistPct = carIdxLapDistPct[i];
         break;
       }
     }
+
+    const lapTimeCarIdx = leaderCarIdx >= 0 ? leaderCarIdx : carIdx;
+    const p1AvgLapTime =
+      (avgLapTimes[lapTimeCarIdx] > 0
+        ? avgLapTimes[lapTimeCarIdx]
+        : classEstLapTimes?.[lapTimeCarIdx]) ?? -1;
+
+    // Check if time limit will be hit first (hybrid race)
     if (
-      lap !== undefined &&
-      leaderLap !== undefined &&
-      lapDistPct !== undefined &&
-      leaderLapDistPct !== undefined &&
-      lap > 0 &&
-      leaderLap > 0
+      p1AvgLapTime > 0 &&
+      timeTotal > 0 &&
+      timeTotal < 604800 &&
+      timeTotal < totalLaps * p1AvgLapTime
     ) {
-      const totalDist = lap + lapDistPct;
-      const totalLeaderDist = leaderLap + leaderLapDistPct;
-      if (totalLeaderDist > totalDist) {
-        result.totalRaceLaps -= Math.floor(totalLeaderDist - totalDist);
+      // Time-limited estimation
+      if (lap === 0) {
+        result.totalRaceLaps = timeTotal / p1AvgLapTime;
+      } else {
+        result.totalRaceLaps =
+          timeRemaining / p1AvgLapTime +
+          (lap - 1) +
+          (carIdxLapDistPct?.[carIdx] ?? 0);
+      }
+    } else {
+      // Pure fixed-lap or laps reached before time
+      result.totalRaceLaps = totalLaps;
+      if (
+        lap !== undefined &&
+        leaderLap !== undefined &&
+        lapDistPct !== undefined &&
+        leaderLapDistPct !== undefined &&
+        lap > 0 &&
+        leaderLap > 0
+      ) {
+        const totalDist = lap + lapDistPct;
+        const totalLeaderDist = leaderLap + leaderLapDistPct;
+        if (totalLeaderDist > totalDist) {
+          result.totalRaceLaps -= Math.floor(totalLeaderDist - totalDist);
+        }
       }
     }
   } else {
     // Time-limited race, so we have to estimate based on remaining time and expected laptimes
-    // In replays, the average lap time is reported as 1s, which is obviously invalid, so we skip
-    // the estimation in this case. Fall back to class est lap time when no avg is available yet
-    // (e.g. race start without a prior qualifying session).
-    const classEstLapTime = classEstLapTimes?.[carIdx];
-    const effectiveLapTime =
-      avgLapTime !== undefined && avgLapTime > 1
-        ? avgLapTime
-        : classEstLapTime !== undefined && classEstLapTime > 1
-          ? classEstLapTime
-          : undefined;
-
     if (effectiveLapTime !== undefined) {
       if (lap === 0) {
         // Race has not yet started

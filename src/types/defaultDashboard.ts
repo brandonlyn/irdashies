@@ -27,9 +27,12 @@ export const defaultDashboard: {
           enabled: true,
           badgeFormat: 'license-color-rating-bw',
         },
-        delta: {
+        grlBadge: {
           enabled: true,
+          badgeFormat: 'license-color-rating-bw',
         },
+        useDynamicBadge: false,
+        delta: { enabled: true },
         gap: {
           enabled: false,
           decimalPlaces: 1,
@@ -115,6 +118,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: true,
@@ -175,6 +179,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: false,
@@ -235,6 +240,7 @@ export const defaultDashboard: {
           'pitStatus',
           'carManufacturer',
           'badge',
+          'grlBadge',
           'iratingChange',
           'positionChange',
           'gap',
@@ -423,6 +429,11 @@ export const defaultDashboard: {
           enabled: true,
           badgeFormat: 'license-color-rating-bw',
         },
+        grlBadge: {
+          enabled: true,
+          badgeFormat: 'license-color-rating-bw',
+        },
+        useDynamicBadge: false,
         iratingChange: {
           enabled: false,
         },
@@ -459,6 +470,7 @@ export const defaultDashboard: {
           'pitStatus',
           'carManufacturer',
           'badge',
+          'grlBadge',
           'iratingChange',
           'positionChange',
           'delta',
@@ -485,6 +497,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: true,
@@ -545,6 +558,7 @@ export const defaultDashboard: {
           },
           sessionLaps: {
             enabled: true,
+            decimalPlaces: 2,
           },
           incidentCount: {
             enabled: false,
@@ -1134,7 +1148,7 @@ export const defaultDashboard: {
           totalFormat: 'minimal',
           labelStyle: 'minimal',
         },
-        sessionLaps: { enabled: true, mode: 'Elapsed' },
+        sessionLaps: { enabled: true, mode: 'Elapsed', decimalPlaces: 2 },
         incidentCount: { enabled: true },
         brakeBias: { enabled: false },
         localTime: { enabled: true },
