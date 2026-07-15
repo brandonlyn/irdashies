@@ -58,8 +58,21 @@ export const useGrlStore = create<GrlState>((set, get) => ({
       if (!response.ok) {
         throw new Error(`Failed to fetch GRL drivers: ${response.statusText}`);
       }
-      const data: GrlDriver[] = await response.json();
-      const driversMap = new Map(data.map((d) => [d.name, d]));
+      const data = await response.json();
+      let driversArray: GrlDriver[] = [];
+      if (Array.isArray(data)) {
+        driversArray = data;
+      } else if (
+        data &&
+        typeof data === 'object' &&
+        data._embedded &&
+        Array.isArray(data._embedded.drivers)
+      ) {
+        driversArray = data._embedded.drivers;
+      } else {
+        logger.error('Unexpected GRL drivers API response format', data);
+      }
+      const driversMap = new Map(driversArray.map((d) => [d.name, d]));
       set({ drivers: driversMap, isLoading: false });
     } catch (err) {
       set({ error: (err as Error).message, isLoading: false });
