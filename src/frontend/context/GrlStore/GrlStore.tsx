@@ -3,7 +3,8 @@ import logger from '@irdashies/utils/logger';
 import { useDashboard } from '../DashboardContext/DashboardContext';
 
 interface GrlDriver {
-  name: string;
+  driverName: string;
+  driverIRacingName: string;
   rating: number;
 }
 
@@ -72,7 +73,9 @@ export const useGrlStore = create<GrlState>((set, get) => ({
       } else {
         logger.error('Unexpected GRL drivers API response format', data);
       }
-      const driversMap = new Map(driversArray.map((d) => [d.name, d]));
+      const driversMap = new Map(
+        driversArray.map((d) => [d.driverIRacingName, d])
+      );
       set({ drivers: driversMap, isLoading: false });
     } catch (err) {
       set({ error: (err as Error).message, isLoading: false });

@@ -29,10 +29,18 @@ describe('GrlStore', () => {
     expect(state.error).toBeNull();
   });
 
-  it('should fetch drivers successfully when API returns an array', async () => {
+  it('should fetch drivers successfully when API returns an array with new structure', async () => {
     const mockDrivers = [
-      { name: 'Driver One', rating: 1500.5 },
-      { name: 'Driver Two', rating: 2200 },
+      {
+        driverName: 'Driver One Website',
+        driverIRacingName: 'Driver One',
+        rating: 1500.5,
+      },
+      {
+        driverName: 'Driver Two Website',
+        driverIRacingName: 'Driver Two',
+        rating: 2200,
+      },
     ];
 
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
@@ -45,11 +53,13 @@ describe('GrlStore', () => {
     const state = useGrlStore.getState();
     expect(state.drivers.size).toBe(2);
     expect(state.drivers.get('Driver One')).toEqual({
-      name: 'Driver One',
+      driverName: 'Driver One Website',
+      driverIRacingName: 'Driver One',
       rating: 1500.5,
     });
     expect(state.drivers.get('Driver Two')).toEqual({
-      name: 'Driver Two',
+      driverName: 'Driver Two Website',
+      driverIRacingName: 'Driver Two',
       rating: 2200,
     });
     expect(state.isLoading).toBe(false);
@@ -63,8 +73,16 @@ describe('GrlStore', () => {
       count: 2,
       _embedded: {
         drivers: [
-          { name: 'Driver Three', rating: 1800 },
-          { name: 'Driver Four', rating: 2500.25 },
+          {
+            driverName: 'Driver Three Website',
+            driverIRacingName: 'Driver Three',
+            rating: 1800,
+          },
+          {
+            driverName: 'Driver Four Website',
+            driverIRacingName: 'Driver Four',
+            rating: 2500.25,
+          },
         ],
       },
     };
@@ -79,11 +97,13 @@ describe('GrlStore', () => {
     const state = useGrlStore.getState();
     expect(state.drivers.size).toBe(2);
     expect(state.drivers.get('Driver Three')).toEqual({
-      name: 'Driver Three',
+      driverName: 'Driver Three Website',
+      driverIRacingName: 'Driver Three',
       rating: 1800,
     });
     expect(state.drivers.get('Driver Four')).toEqual({
-      name: 'Driver Four',
+      driverName: 'Driver Four Website',
+      driverIRacingName: 'Driver Four',
       rating: 2500.25,
     });
     expect(state.isLoading).toBe(false);
@@ -156,8 +176,22 @@ describe('GrlStore', () => {
     // Populate store manually
     useGrlStore.setState({
       drivers: new Map([
-        ['Alice', { name: 'Alice', rating: 1950.8 }],
-        ['Bob', { name: 'Bob', rating: 1200.2 }],
+        [
+          'Alice',
+          {
+            driverName: 'Alice Website',
+            driverIRacingName: 'Alice',
+            rating: 1950.8,
+          },
+        ],
+        [
+          'Bob',
+          {
+            driverName: 'Bob Website',
+            driverIRacingName: 'Bob',
+            rating: 1200.2,
+          },
+        ],
       ]),
       classes: new Map([
         ['Alice', 'Pro'],
