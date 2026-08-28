@@ -16,6 +16,7 @@ import {
   useGeneralSettings,
   useLapTimesStoreUpdater,
   useP2PDisplayStates,
+  useGrlStoreUpdater,
   useDrivingState,
   useWeekendInfoNumCarClasses,
   useWeekendInfoTeamRacing,
@@ -39,6 +40,8 @@ export const Standings = () => {
   );
 
   const p2pDisplayStates = useP2PDisplayStates();
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const standings = useDriverStandings(settings);
   const hasAnyCountryFlag = useMemo(
