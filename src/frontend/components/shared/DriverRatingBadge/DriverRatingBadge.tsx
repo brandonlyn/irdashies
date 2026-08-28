@@ -14,7 +14,11 @@ export interface DriverRatingBadgeProps {
     | 'license-bw-rating-bw-no-license'
     | 'rating-bw-no-license'
     | 'fullrating-bw-no-license'
-    | 'rating-only-color-rating-bw';
+    | 'rating-only-color-rating-bw'
+    | 'license-only-color'
+    | 'license-only-bw'
+    | 'license-only-color-minimal'
+    | 'license-only-bw-minimal';
 }
 
 export const DriverRatingBadge = ({
@@ -63,6 +67,46 @@ export const DriverRatingBadge = ({
     'R 0.0';
 
   switch (format) {
+    case 'license-only-color':
+      return (
+        <div className="flex gap-1 items-center justify-center mx-2">
+          <div
+            className={`text-white text-center text-nowrap border-2 px-1 rounded-md text-xs leading-tight min-w-[3.6em] ${color}`}
+          >
+            {formattedLicense} {safetyRating}
+          </div>
+        </div>
+      );
+
+    case 'license-only-bw':
+      return (
+        <div className="flex gap-1 items-center justify-center mx-2">
+          <div className="bg-white/10 text-white text-center border-2 border-transparent px-1 rounded-md text-xs leading-tight min-w-[3.6em]">
+            {formattedLicense} {safetyRating}
+          </div>
+        </div>
+      );
+
+    case 'license-only-color-minimal':
+      return (
+        <div className="flex gap-1 items-center justify-center mx-2">
+          <div
+            className={`text-white text-center text-nowrap border-2 px-1 rounded-md text-xs leading-tight min-w-[1.8em] ${color}`}
+          >
+            {formattedLicense}
+          </div>
+        </div>
+      );
+
+    case 'license-only-bw-minimal':
+      return (
+        <div className="flex gap-1 items-center justify-center mx-2">
+          <div className="bg-white/10 text-white text-center border-2 border-transparent px-1 rounded-md text-xs leading-tight min-w-[1.8em]">
+            {formattedLicense}
+          </div>
+        </div>
+      );
+
     case 'license-color-fullrating-combo':
       // License = colored badge, full irating combined
       return (

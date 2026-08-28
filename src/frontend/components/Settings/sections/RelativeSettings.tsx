@@ -59,6 +59,7 @@ const sortableSettings: SortableSetting[] = [
   },
   { id: 'driverTag', label: 'Driver Tag', configKey: 'driverTag' },
   { id: 'badge', label: 'Driver Badge', configKey: 'badge' },
+  { id: 'grlBadge', label: 'GRL Badge', configKey: 'grlBadge' },
   { id: 'iratingChange', label: 'iRating Change', configKey: 'iratingChange' },
   { id: 'delta', label: 'Relative', configKey: 'delta' },
   { id: 'fastestTime', label: 'Best Time', configKey: 'fastestTime' },
@@ -121,7 +122,8 @@ const DisplaySettingsList = ({
             }}
             sortableProps={sortableProps}
           >
-            {setting.configKey === 'badge' &&
+            {(setting.configKey === 'badge' ||
+              setting.configKey === 'grlBadge') &&
               (configValue as { enabled: boolean }).enabled && (
                 <div className="mt-3">
                   <div className="flex flex-wrap gap-3 justify-end">
@@ -139,11 +141,18 @@ const DisplaySettingsList = ({
                         'license-bw-rating-bw-no-license',
                         'rating-bw-no-license',
                         'fullrating-bw-no-license',
+                        'license-only-color',
+                        'license-only-bw',
+                        'license-only-color-minimal',
+                        'license-only-bw-minimal',
                       ] as const
                     ).map((format) => (
                       <BadgeFormatPreview
                         key={format}
                         format={format}
+                        type={
+                          setting.configKey === 'grlBadge' ? 'grl' : 'driver'
+                        }
                         selected={
                           (
                             configValue as {
@@ -282,8 +291,7 @@ const DisplaySettingsList = ({
                         [setting.configKey]: {
                           ...cv,
                           pitLapDisplayMode: e.target.value as
-                            | 'lastPitLap'
-                            | 'lapsSinceLastPit',
+                            'lastPitLap' | 'lapsSinceLastPit',
                         },
                       });
                     }}
@@ -586,6 +594,18 @@ export const RelativeSettings = () => {
                         handleConfigChange({ radio: { persistenceSeconds: v } })
                       }
                     />
+
+                    {settings.config.badge.enabled &&
+                      settings.config.grlBadge.enabled && (
+                        <SettingToggleRow
+                          title="Use Dynamic Badge"
+                          description="Show GRL badge in GRL sessions, Driver badge otherwise."
+                          enabled={settings.config.useDynamicBadge ?? false}
+                          onToggle={(newValue) =>
+                            handleConfigChange({ useDynamicBadge: newValue })
+                          }
+                        />
+                      )}
                   </SettingsSection>
 
                   <SettingDivider />
