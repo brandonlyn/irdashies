@@ -148,6 +148,8 @@ export const FasterCarsFromBehindSettings = () => {
                           'license-bw-rating-bw-no-license',
                           'rating-bw-no-license',
                           'fullrating-bw-no-license',
+                          'license-only-color',
+                          'license-only-bw',
                         ] as const
                       ).map((format) => (
                         <BadgeFormatPreview

@@ -235,6 +235,7 @@ export async function publishIRacingSDKEvents(
       // Negative infinity makes the first tick fetch and publish immediately.
       let lastSessionPollTime = Number.NEGATIVE_INFINITY;
       let wasRunning = false;
+      let lastSubSessionId = -1;
 
       while (!shouldStop) {
         const pollStartedAt = performance.now();
@@ -304,6 +305,16 @@ export async function publishIRacingSDKEvents(
         }
 
         if (session) {
+          // Log WeekendInfo if we've joined a new subsession
+          const subSessionId = session.WeekendInfo?.SubSessionID;
+          if (subSessionId !== undefined && subSessionId !== lastSubSessionId) {
+            logger.info(
+              `[SESSION_INFO] Joined subsession ${subSessionId}:`,
+              session.WeekendInfo
+            );
+            lastSubSessionId = subSessionId;
+          }
+
           // Session YAML is large. Publish it only when the SDK revision changes;
           // late subscribers are seeded from latestSession below.
           if (sdk.currDataVersion !== lastSessionVersion) {
