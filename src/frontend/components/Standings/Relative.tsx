@@ -14,6 +14,7 @@ import {
   usePitStopDuration,
   usePitLaneStore,
   useActiveSimulator,
+  useGrlStoreUpdater,
 } from '@irdashies/context';
 import { RATING_COLUMN_IDS, simulatorHasDriverRatings } from '@irdashies/types';
 import {
@@ -86,6 +87,9 @@ export const Relative = () => {
   const pitStopDurations = usePitStopDuration();
   const pitExitPct = usePitLaneStore((s) => s.pitExitPct);
   const pitExitAfterSF = pitExitPct !== null && pitExitPct > 0.85;
+
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const isSingleMake = useIsSingleMake(
     !!settings?.carManufacturer?.hideIfSingleMake
