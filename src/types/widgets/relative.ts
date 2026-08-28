@@ -57,6 +57,11 @@ export default defineWidgetManifest({
       badgeFormat: 'license-color-rating-bw',
       lmuFormat: 'plates',
     },
+    grlBadge: {
+      enabled: true,
+      badgeFormat: 'license-color-rating-bw',
+    },
+    useDynamicBadge: false,
     iratingChange: {
       enabled: false,
     },
@@ -101,6 +106,7 @@ export default defineWidgetManifest({
       'carManufacturer',
       'lmuBadge',
       'badge',
+      'grlBadge',
       'iratingChange',
       'positionChange',
       'delta',

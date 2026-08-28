@@ -23,6 +23,8 @@ export * from './ReplayContextStore';
 export * from './LapHistoryArchive';
 export * from './PushToPassStore/PushToPassStore';
 export * from './PushToPassStore/PushToPassStoreUpdater';
+export * from './GrlStore/GrlStore';
+export * from './GrlStore/GrlStoreUpdater';
 export * from './shared';
 export * from './PersonalBestStore/PersonalBestStore';
 export * from './LapTraceStore/LapTraceStore';

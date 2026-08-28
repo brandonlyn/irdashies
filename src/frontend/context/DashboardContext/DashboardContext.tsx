@@ -299,6 +299,10 @@ export const useDashboard = (): DashboardContextProps => {
   return context;
 };
 
+export const useDashboardOptional = (): DashboardContextProps | undefined => {
+  return useContext(DashboardContext);
+};
+
 /**
  * The dashboard bridge, without requiring a provider.
  *

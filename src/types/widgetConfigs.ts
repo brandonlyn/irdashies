@@ -136,20 +136,28 @@ export type StandingsBadgeFormat =
   | 'rating-only-bw-rating-bw'
   | 'license-bw-rating-bw-no-license'
   | 'rating-bw-no-license'
-  | 'fullrating-bw-no-license';
+  | 'fullrating-bw-no-license'
+  | 'license-only-color'
+  | 'license-only-bw'
+  | 'license-only-color-minimal'
+  | 'license-only-bw-minimal';
 
 export type RelativeBadgeFormat =
   | 'license-color-fullrating-combo'
   | 'fullrating-color-no-license'
+  | 'rating-color-no-license'
   | 'license-color-fullrating-bw'
   | 'license-color-rating-bw'
   | 'license-color-rating-bw-no-license'
-  | 'rating-color-no-license'
   | 'license-bw-rating-bw'
   | 'rating-only-bw-rating-bw'
   | 'license-bw-rating-bw-no-license'
   | 'rating-bw-no-license'
-  | 'fullrating-bw-no-license';
+  | 'fullrating-bw-no-license'
+  | 'license-only-color'
+  | 'license-only-bw'
+  | 'license-only-color-minimal'
+  | 'license-only-bw-minimal';
 
 // ===========================
 // Widget config types
@@ -174,6 +182,8 @@ export interface StandingsConfig {
     /** How the LMU rank pair is drawn; see LmuBadgeFormat. */
     lmuFormat?: LmuBadgeFormat;
   };
+  grlBadge: { enabled: boolean; badgeFormat: StandingsBadgeFormat };
+  useDynamicBadge?: boolean;
   delta: { enabled: boolean };
   gap: {
     enabled: boolean;
@@ -267,6 +277,8 @@ export interface RelativeConfig {
     /** How the LMU rank pair is drawn; see LmuBadgeFormat. */
     lmuFormat?: LmuBadgeFormat;
   };
+  grlBadge: { enabled: boolean; badgeFormat: RelativeBadgeFormat };
+  useDynamicBadge?: boolean;
   iratingChange: { enabled: boolean };
   positionChange?: { enabled: boolean };
   delta: { enabled: boolean; precision: number };

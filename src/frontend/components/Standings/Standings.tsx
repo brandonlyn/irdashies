@@ -17,6 +17,7 @@ import {
   useGeneralSettings,
   useLapTimesStoreUpdater,
   useP2PDisplayStates,
+  useGrlStoreUpdater,
   useDrivingState,
   useWeekendInfoNumCarClasses,
   useWeekendInfoTeamRacing,
@@ -159,6 +160,8 @@ export const Standings = () => {
   );
 
   const p2pDisplayStates = useHeld(useP2PDisplayStates(), isEmptyList);
+  // Update GRL data
+  useGrlStoreUpdater();
 
   const standings = useHeld(
     useDriverStandings(settings, {

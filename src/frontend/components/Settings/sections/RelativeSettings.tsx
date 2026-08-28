@@ -20,6 +20,7 @@ import { SettingDivider } from '../components/SettingDivider';
 import { SettingsSection } from '../components/SettingSection';
 import { SettingActionButton } from '../components/SettingActionButton';
 import { SettingProps, settingPropFor } from '../components/SettingProp';
+import { SettingToggleRow } from '../components/SettingToggleRow';
 import {
   SessionBarItemsList,
   SessionBarItemConfig,
@@ -55,6 +56,10 @@ const IRACING_BADGE_FORMATS = [
   'license-bw-rating-bw-no-license',
   'rating-bw-no-license',
   'fullrating-bw-no-license',
+  'license-only-color',
+  'license-only-bw',
+  'license-only-color-minimal',
+  'license-only-bw-minimal',
 ] as const satisfies readonly RelativeBadgeFormat[];
 
 const sortableSettings: SortableSetting[] = [
@@ -81,7 +86,8 @@ const sortableSettings: SortableSetting[] = [
     hasSubSetting: true,
   },
   { id: 'driverTag', label: 'Driver Tag', configKey: 'driverTag' },
-  { id: 'badge', label: 'Rating', configKey: 'badge' },
+  { id: 'badge', label: 'Driver Badge', configKey: 'badge' },
+  { id: 'grlBadge', label: 'GRL Badge', configKey: 'grlBadge' },
   { id: 'iratingChange', label: 'iRating Change', configKey: 'iratingChange' },
   {
     id: 'positionChange',
@@ -155,7 +161,8 @@ const DisplaySettingsList = ({
             }}
             sortableProps={sortableProps}
           >
-            {setting.configKey === 'badge' &&
+            {(setting.configKey === 'badge' ||
+              setting.configKey === 'grlBadge') &&
               (configValue as { enabled: boolean }).enabled && (
                 // One line, indented like the compact sub-settings
                 // above (pl-8), since these belong to Rating rather
@@ -163,14 +170,19 @@ const DisplaySettingsList = ({
                 // overflowing a narrow settings panel.
                 <div className="mt-2 flex flex-wrap items-center gap-4 pl-8">
                   <FormatSelect
-                    label="iRacing"
+                    label={setting.configKey === 'grlBadge' ? 'GRL' : 'iRacing'}
                     value={
                       (configValue as { badgeFormat: RelativeBadgeFormat })
                         .badgeFormat
                     }
                     options={IRACING_BADGE_FORMATS}
                     renderOption={(format) => (
-                      <BadgeFormatPreview format={format} />
+                      <BadgeFormatPreview
+                        format={format}
+                        type={
+                          setting.configKey === 'grlBadge' ? 'grl' : 'driver'
+                        }
+                      />
                     )}
                     onChange={(badgeFormat) => {
                       const cv = settings.config[setting.configKey] as Record<
@@ -451,6 +463,18 @@ export const RelativeSettings = () => {
                       <SettingProp path="buffer" />
                       <SettingProp path="useLivePosition" />
                       <SettingProp path="radio.persistenceSeconds" />
+
+                      {settings.config.badge.enabled &&
+                        settings.config.grlBadge.enabled && (
+                          <SettingToggleRow
+                            title="Use Dynamic Badge"
+                            description="Show GRL badge in GRL sessions, Driver badge otherwise."
+                            enabled={settings.config.useDynamicBadge ?? false}
+                            onToggle={(newValue) =>
+                              handleConfigChange({ useDynamicBadge: newValue })
+                            }
+                          />
+                        )}
                     </SettingsSection>
 
                     <SettingDivider />

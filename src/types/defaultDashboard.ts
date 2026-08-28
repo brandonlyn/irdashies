@@ -1,4 +1,4 @@
-import type { GeneralSettingsType } from './dashboardLayout';
+﻿import type { GeneralSettingsType } from './dashboardLayout';
 import type { TypedDashboardWidget, WidgetConfigMap } from './widgetConfigs';
 import { WIDGET_MANIFESTS, getWidgetManifest } from './widgets';
 
