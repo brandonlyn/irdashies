@@ -13,6 +13,7 @@ vi.mock('@irdashies/context', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@irdashies/context')>()),
   useGeneralSettings: () => undefined,
   useLapTimesStoreUpdater: () => undefined,
+  useGrlStoreUpdater: () => undefined,
   useP2PDisplayStates: () => [],
   useDrivingState: () => ({ isDriving: true }),
   useWeekendInfoNumCarClasses: () => 1,

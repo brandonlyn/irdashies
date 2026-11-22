@@ -4,8 +4,9 @@ import { RATING_COLUMN_IDS } from '@irdashies/types';
 import { getOrderedColumns } from './Standings';
 import { DriverInfoRow } from './components/DriverInfoRow/DriverInfoRow';
 
-vi.mock('@irdashies/context', () => ({
-  useDashboard: () => ({ currentDashboard: undefined }),
+vi.mock('@irdashies/context', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@irdashies/context')>()),
+  useDashboard: () => ({ currentDashboard: undefined, isDemoMode: false }),
 }));
 
 /**

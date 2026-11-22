@@ -11,8 +11,9 @@ import {
 } from '@irdashies/domain';
 import { DriverInfoRow } from './DriverInfoRow';
 
-vi.mock('@irdashies/context', () => ({
-  useDashboard: () => ({ currentDashboard: undefined }),
+vi.mock('@irdashies/context', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@irdashies/context')>()),
+  useDashboard: () => ({ currentDashboard: undefined, isDemoMode: false }),
 }));
 
 const baseProps = {

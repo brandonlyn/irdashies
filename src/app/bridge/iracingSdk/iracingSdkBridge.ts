@@ -372,6 +372,7 @@ export async function publishIRacingSDKEvents(
         // Negative infinity makes the first tick fetch and publish immediately.
         let lastSessionPollTime = Number.NEGATIVE_INFINITY;
         let hadLifecycleEntry = false;
+        let lastSubSessionId = -1;
 
         try {
           while (!shouldStop) {
@@ -469,6 +470,21 @@ export async function publishIRacingSDKEvents(
                 notify(callback, telemetry)
               );
               perfMetrics.markEnd('telemetryCallbacks');
+            }
+
+            if (session) {
+              // Log WeekendInfo if we've joined a new subsession
+              const subSessionId = session.WeekendInfo?.SubSessionID;
+              if (
+                subSessionId !== undefined &&
+                subSessionId !== lastSubSessionId
+              ) {
+                logger.info(
+                  `[SESSION_INFO] Joined subsession ${subSessionId}:`,
+                  session.WeekendInfo
+                );
+                lastSubSessionId = subSessionId;
+              }
             }
 
             perfMetrics.markEnd('processTelemetry');

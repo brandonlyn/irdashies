@@ -3,8 +3,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { IratingChangeCell } from './IratingChangeCell';
 import { DriverInfoRow } from '../DriverInfoRow';
 
-vi.mock('@irdashies/context', () => ({
+vi.mock('@irdashies/context', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@irdashies/context')>()),
   useDashboard: () => ({ currentDashboard: undefined }),
+  useSessionStore: () => undefined,
 }));
 
 const renderCell = (value?: number, compactMode?: string) =>
