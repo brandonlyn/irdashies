@@ -2,6 +2,7 @@ import type { IrSdkSourceBridge, Session, Telemetry } from '@irdashies/types';
 import { GlobalFlags, SessionState } from '@irdashies/types';
 import mockSessionInfo from '../../../irsdk/node/utils/mock-data/session.json';
 import mockTelemetry from '../../../irsdk/node/utils/mock-data/telemetry.json';
+import { GRL_DEMO_DRIVERS } from './grlDemoDrivers';
 
 const MOCK_TEAM_NAMES = [
   'Apex Racing',
@@ -410,11 +411,18 @@ export function generateMockData(sessionData?: {
               Drivers: base.DriverInfo.Drivers.map((driver) => {
                 if (driver.CarIsPaceCar) return driver;
 
+                const grlDriver =
+                  GRL_DEMO_DRIVERS[
+                    (driver.CarIdx - 1) % GRL_DEMO_DRIVERS.length
+                  ];
                 const teamIndex = (driver.CarIdx - 1) % MOCK_TEAM_NAMES.length;
                 return {
                   ...driver,
+                  UserName: grlDriver.name,
+                  AbbrevName: grlDriver.abbrevName,
+                  Initials: grlDriver.initials,
                   TeamID: teamIndex + 1,
-                  TeamName: MOCK_TEAM_NAMES[teamIndex],
+                  TeamName: grlDriver.team || MOCK_TEAM_NAMES[teamIndex],
                   CarID: P2P_DEMO_CAR_IDXS.includes(driver.CarIdx)
                     ? P2P_IR18_CAR_ID
                     : driver.CarID,
