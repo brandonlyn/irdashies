@@ -40,12 +40,19 @@ const upgraded = (): ReleaseNotesState => ({
 });
 
 describe('release note version selection', () => {
-  it.each(['2.1.0', 'v2.1.0', '2.1.0+build.42'])(
-    'normalizes %s to installed release version',
-    (value) => {
-      expect(normalizeVersion(value)).toBe('2.1.0');
-    }
-  );
+  it.each([
+    '2.1.0',
+    'v2.1.0',
+    '2.1.0+build.42',
+    '2.1.0-grl',
+    'v2.1.0-grl',
+    '3.0.0-grl',
+    'v3.0.0-grl',
+  ])('normalizes %s to base release version', (value) => {
+    expect(normalizeVersion(value)).toBe(
+      value.includes('3.0.0') ? '3.0.0' : '2.1.0'
+    );
+  });
   it.each(['latest', '../2.1.0', '2.01.0', '2.1.0-01', '', undefined, 3])(
     'rejects invalid version %s',
     (value) => {
@@ -58,6 +65,9 @@ describe('release note version selection', () => {
     expect(compareVersions('2.1.0-beta.10', '2.1.0-beta.2')).toBe(1);
     expect(compareVersions('2.1.0-1', '2.1.0-alpha')).toBe(-1);
     expect(compareVersions('2.1.0+one', '2.1.0+two')).toBe(0);
+    expect(compareVersions('3.0.0-grl', '3.0.0')).toBe(0);
+    expect(compareVersions('3.0.0-grl', '2.1.0')).toBe(1);
+    expect(compareVersions('2.1.0-grl', '3.0.0')).toBe(-1);
   });
 });
 
@@ -203,6 +213,18 @@ describe('GitHub fetching and offline cache', () => {
       'https://api.github.com/repos/tariknz/irdashies/releases/tags/2.1.0',
     ]);
   });
+  it('excludes -grl suffix when requesting GitHub releases', async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(releaseResponse({ tag_name: 'v3.0.0' }));
+    expect(await fetchGitHubRelease('3.0.0-grl', fetcher)).toMatchObject({
+      status: 'ready',
+      release: { version: '3.0.0' },
+    });
+    expect(fetcher.mock.calls[0][0]).toBe(
+      'https://api.github.com/repos/tariknz/irdashies/releases/tags/v3.0.0'
+    );
+  });
   it.each([{ draft: true }, { tag_name: 'v2.2.0' }])(
     'rejects unpublished or mismatched responses',
     async (extra) => {
@@ -310,6 +332,7 @@ describe('release history', () => {
           { tag_name: '2.0.0', name: 'Older release' },
           { tag_name: 'v2.2.0-beta.1', name: 'Beta' },
           { tag_name: 'v3.0.0', name: 'Draft', draft: true },
+          { tag_name: 'v2.1.0-grl', name: 'Fork release' },
           { tag_name: '../../private' },
         ])
       );

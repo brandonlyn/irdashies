@@ -91,6 +91,8 @@ export async function fetchGitHubReleases(
     for (const entry of raw) {
       if (!entry || typeof entry !== 'object') continue;
       const release = entry as Record<string, unknown>;
+      const rawTag = String(release.tag_name ?? '');
+      if (rawTag.toLowerCase().includes('-grl')) continue;
       const version = normalizeVersion(release.tag_name);
       if (!version || release.draft === true) continue;
       const parsed = sanitizeRelease({
@@ -120,9 +122,11 @@ export async function fetchGitHubReleases(
 }
 
 export async function fetchGitHubRelease(
-  version: string,
+  rawVersion: string,
   fetcher: typeof fetch = fetch
 ): Promise<ReleaseNotesResult> {
+  const version = normalizeVersion(rawVersion);
+  if (!version) return { status: 'unavailable', reason: 'not-found' };
   try {
     // Fetch the exact release, never /latest: beta, skipped and installed versions differ.
     for (const tag of [`v${version}`, version]) {

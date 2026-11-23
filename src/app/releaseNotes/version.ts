@@ -3,15 +3,21 @@ const VERSION =
   /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*)?$/;
 
 export function normalizeVersion(value: unknown): string | null {
-  if (typeof value !== 'string' || value.length > 100 || !VERSION.test(value)) {
+  if (typeof value !== 'string' || value.length > 100) {
     return null;
   }
-  return value.replace(/^v/, '').split('+')[0];
+  const clean = value.replace(/-grl(?=\+|$)/i, '');
+  if (!VERSION.test(clean)) {
+    return null;
+  }
+  return clean.replace(/^v/, '').split('+')[0];
 }
 
 export function compareVersions(a: string, b: string): number {
-  const left = VERSION.exec(a);
-  const right = VERSION.exec(b);
+  const cleanA = typeof a === 'string' ? a.replace(/-grl(?=\+|$)/i, '') : a;
+  const cleanB = typeof b === 'string' ? b.replace(/-grl(?=\+|$)/i, '') : b;
+  const left = VERSION.exec(cleanA);
+  const right = VERSION.exec(cleanB);
   if (!left || !right) return 0;
   for (let i = 1; i <= 3; i++) {
     if (BigInt(left[i]) !== BigInt(right[i])) {
